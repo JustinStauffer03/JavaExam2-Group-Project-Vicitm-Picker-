@@ -50,7 +50,7 @@ public class VictimPicker {
 
     }
     public void markAbsent(Victim absentvictim){
-
+         victims.remove(absentvictim);
         absentvictim.setAbsent(absentvictim.getAbsent());
             ArrayList<Date> absentdates = new ArrayList<>();
         this.absentToday.add(absentvictim);
