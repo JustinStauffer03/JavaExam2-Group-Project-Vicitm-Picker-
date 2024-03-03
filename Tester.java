@@ -1,40 +1,35 @@
-//Justin Stauffer
+import javax.swing.SwingUtilities;
 import java.util.ArrayList;
 
 public class Tester {
     public static void main(String[] args) {
-        //This is used for if the teacher theoretically wants to pick 5 times.
-        int numtimesused = 5;
-        Victim firstVictim = new Victim("Justin Stauffer", 1);
-        Victim secondVictim = new Victim("Jessie Stauffer", 1);
-        Victim thirdVictim = new Victim("Braylon Bailey", 1);
-        Victim fourthVictim = new Victim("Jim Smith", 1);
-        Victim fifthVictim = new Victim("Knewt Caraway", 1);
-
-        // Create an instance of VictimPicker
+        // Initialize the VictimPicker
         VictimPicker picker = new VictimPicker();
 
-        // Create an ArrayList and add Victims
-        ArrayList<Victim> victims = new ArrayList<>();
-        victims.add(firstVictim);
-        victims.add(secondVictim);
-        victims.add(thirdVictim);
-        victims.add(fourthVictim);
-        victims.add(fifthVictim);
-        picker.markAbsent(firstVictim);// tests to see if markabsent is working
-        // Call loadList on the picker instance with the victims list
-        picker.loadList(victims);
-        //simulates five runs during one class period
-        for(int i = 0; i < numtimesused; i++){
-        ArrayList<Victim> thechosenones = picker.chooseTwo();
-        picker.score(1);
+        // Create sample victims
+        ArrayList<Victim> sampleVictims = createSampleVictims();
 
-        for (Victim victim : thechosenones) {
+        // Load the sample victims into the VictimPicker
+        picker.loadList(sampleVictims);
 
-            System.out.println(victim);
-        }
+        // Optionally mark a victim as absent to test that functionality
+        // picker.markAbsentByName("Jim Smith");
 
-        }
-    }}
+        // Launch the GUI
+        SwingUtilities.invokeLater(() -> {
+            GUI gui = new GUI(picker);
+            gui.setVisible(true);
+        });
+    }
 
-
+    // Method to create sample victims
+    public static ArrayList<Victim> createSampleVictims() {
+        ArrayList<Victim> sampleVictims = new ArrayList<>();
+        sampleVictims.add(new Victim("Justin Stauffer"));
+        sampleVictims.add(new Victim("Jessie Stauffer"));
+        sampleVictims.add(new Victim("Braylon Bailey"));
+        sampleVictims.add(new Victim("Jim Smith"));
+        sampleVictims.add(new Victim("Knewt Caraway"));
+        return sampleVictims;
+    }
+}
