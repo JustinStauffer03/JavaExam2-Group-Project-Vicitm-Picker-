@@ -1,35 +1,24 @@
 import javax.swing.SwingUtilities;
 import java.util.ArrayList;
-
+//tests our victim picker
 public class Tester {
     public static void main(String[] args) {
-        // Initialize the VictimPicker
         VictimPicker picker = new VictimPicker();
-
-        // Create sample victims
-        ArrayList<Victim> sampleVictims = createSampleVictims();
-
-        // Load the sample victims into the VictimPicker
-        picker.loadList(sampleVictims);
-
-        // Optionally mark a victim as absent to test that functionality
-        // picker.markAbsentByName("Jim Smith");
-
-        // Launch the GUI
+        ArrayList<Victim> chosenOnes = createSampleVictims();
+        picker.loadList(chosenOnes);
         SwingUtilities.invokeLater(() -> {
             GUI gui = new GUI(picker);
             gui.setVisible(true);
         });
     }
-
-    // Method to create sample victims
+    // creates sample victins
     public static ArrayList<Victim> createSampleVictims() {
-        ArrayList<Victim> sampleVictims = new ArrayList<>();
-        sampleVictims.add(new Victim("Justin Stauffer"));
-        sampleVictims.add(new Victim("Jessie Stauffer"));
-        sampleVictims.add(new Victim("Braylon Bailey"));
-        sampleVictims.add(new Victim("Jim Smith"));
-        sampleVictims.add(new Victim("Knewt Caraway"));
-        return sampleVictims;
+        ArrayList<Victim> chosenOnes = new ArrayList<>();
+        chosenOnes.add(new Victim("Justin Stauffer"));
+        chosenOnes.add(new Victim("Jessie Stauffer"));
+        chosenOnes.add(new Victim("Braylon Bailey"));
+        chosenOnes.add(new Victim("Jim Smith"));
+        chosenOnes.add(new Victim("Knewt Caraway"));
+        return chosenOnes;
     }
 }
