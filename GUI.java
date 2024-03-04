@@ -58,7 +58,6 @@ public class GUI extends JFrame {
             dropdown.addItem(victim.getName());
         }
     }
-
     private void addVolunteer(ActionEvent e) {
         String volunteerName = volunteerField.getText();
         if (!volunteerName.isEmpty()) {
@@ -67,26 +66,22 @@ public class GUI extends JFrame {
             volunteerField.setText("");
         }
     }
-
     private void pickVictim() {
         Victim picked = picker.chooseOne();
         updateDropdown();
         updateVictimInfo(picked.getName());
     }
-
     private void markAbsent() {
         String selectedName = (String) dropdown.getSelectedItem();
         picker.markAbsentByName(selectedName);
         updateDropdown();
         victimInfoLabel.setText("Select a victim to see their info");
     }
-
     private void adjustScore(int adjustment) {
         String selectedName = (String) dropdown.getSelectedItem();
         picker.adjustScoreByName(selectedName, adjustment);
         updateVictimInfo(selectedName);
     }
-
     private void updateVictimInfo(String name) {
         for (Victim victim : picker.getVictims()) {
             if (victim.getName().equals(name)) {
@@ -95,11 +90,9 @@ public class GUI extends JFrame {
             }
         }
     }
-
     public static void main(String[] args) {
         VictimPicker picker = new VictimPicker();
         picker.loadList(Tester.createSampleVictims());
-
         SwingUtilities.invokeLater(() -> {
             GUI gui = new GUI(picker);
             gui.setVisible(true);
