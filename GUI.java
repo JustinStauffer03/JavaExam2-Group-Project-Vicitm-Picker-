@@ -11,6 +11,9 @@ public class GUI extends JFrame {
     private JComboBox<String> absentDropdown; // New dropdown for absent victims
     private JTextField volunteerField;
     private JLabel victimInfoLabel;
+    private JLabel countdownLabel;
+    private Timer countdownTimer;
+    private int countdownSeconds = 30;
 
     public GUI(VictimPicker picker) {
         this.picker = picker;
@@ -63,6 +66,10 @@ public class GUI extends JFrame {
         victimInfoLabel = new JLabel("Select a victim to see their info");
         victimInfoLabel.setFont(labelFont);
         add(victimInfoLabel);
+
+        countdownLabel = new JLabel("Time to answer: --");
+        countdownLabel.setFont(labelFont);
+        add(countdownLabel);
     }
 
     private JButton createButton(String text, Font font) {
@@ -104,6 +111,21 @@ public class GUI extends JFrame {
         Victim picked = picker.chooseOne();
         dropdown.setSelectedItem(picked.getName());
         updateVictimInfo(picked.getName());
+
+        // Reset and start the countdown timer
+        if (countdownTimer != null) {
+            countdownTimer.stop(); // Stop any existing countdown
+        }
+        countdownSeconds = 30; // Reset to 30 seconds
+        countdownTimer = new Timer(1000, e -> {
+            countdownSeconds--;
+            countdownLabel.setText("Time to answer: " + countdownSeconds + "s");
+            if (countdownSeconds <= 0) {
+                ((Timer)e.getSource()).stop(); // Stop the timer when it reaches 0
+                countdownLabel.setText("Time is up!");
+            }
+        });
+        countdownTimer.start(); // Start the countdown
     }
 
     private void markAbsent() {
