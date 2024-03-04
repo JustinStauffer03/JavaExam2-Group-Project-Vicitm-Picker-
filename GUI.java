@@ -1,12 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.Date;
 
 public class GUI extends JFrame {
     private VictimPicker picker;
 
     private JComboBox<String> dropdown;
+    private JComboBox<String> absentDropdown; // New dropdown for absent victims
     private JTextField volunteerField;
     private JLabel victimInfoLabel;
 
@@ -19,43 +21,73 @@ public class GUI extends JFrame {
     private void initializeComponents() {
         setTitle("Classroom Interaction System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 300);
-        setLayout(new FlowLayout());
+        setSize(600, 400); // Adjusted size to accommodate new components
+        getContentPane().setBackground(new Color(240, 240, 240)); // Set a light background color
+        setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Add spacing between components
+
+        Font labelFont = new Font("Arial", Font.BOLD, 12);
+        Font buttonFont = new Font("Arial", Font.PLAIN, 12);
 
         dropdown = new JComboBox<>();
+        dropdown.setPreferredSize(new Dimension(200, 25)); // Adjust size for uniformity
         add(dropdown);
+
+        absentDropdown = new JComboBox<>();
+        absentDropdown.setPreferredSize(new Dimension(200, 25)); // Adjust size for uniformity
+        absentDropdown.addActionListener(e -> displayAbsenceInfo());
+        add(absentDropdown);
 
         volunteerField = new JTextField(20);
         add(volunteerField);
 
-        JButton volunteerButton = new JButton("Add Volunteer");
+        JButton volunteerButton = createButton("New Student", buttonFont);
         volunteerButton.addActionListener(this::addVolunteer);
         add(volunteerButton);
 
-        JButton pickButton = new JButton("Pick Victim");
+        JButton pickButton = createButton("Pick Victim", buttonFont);
         pickButton.addActionListener(e -> pickVictim());
         add(pickButton);
 
-        JButton absentButton = new JButton("Mark Absent");
+        JButton absentButton = createButton("Mark Absent", buttonFont);
         absentButton.addActionListener(e -> markAbsent());
         add(absentButton);
 
-        JButton addButton = new JButton("Score +1");
+        JButton addButton = createButton("Score +1", buttonFont);
         addButton.addActionListener(e -> adjustScore(1));
         add(addButton);
 
-        JButton subtractButton = new JButton("Score -1");
+        JButton subtractButton = createButton("Score -1", buttonFont);
         subtractButton.addActionListener(e -> adjustScore(-1));
         add(subtractButton);
 
         victimInfoLabel = new JLabel("Select a victim to see their info");
+        victimInfoLabel.setFont(labelFont);
         add(victimInfoLabel);
     }
+
+    private JButton createButton(String text, Font font) {
+        JButton button = new JButton(text);
+        button.setFont(font);
+        return button;
+    }
+
 
     private void updateDropdown() {
         dropdown.removeAllItems();
         for (Victim victim : picker.getVictims()) {
-            dropdown.addItem(victim.getName());
+            if (!victim.isAbsent()) { // Add only non-absent victims
+                dropdown.addItem(victim.getName());
+            }
+        }
+        updateAbsentDropdown(); // Also update absent dropdown whenever main dropdown is updated
+    }
+
+    private void updateAbsentDropdown() {
+        absentDropdown.removeAllItems();
+        for (Victim victim : picker.getVictims()) {
+            if (victim.isAbsent()) {
+                absentDropdown.addItem(victim.getName());
+            }
         }
     }
 
@@ -70,7 +102,7 @@ public class GUI extends JFrame {
 
     private void pickVictim() {
         Victim picked = picker.chooseOne();
-        updateDropdown();
+        dropdown.setSelectedItem(picked.getName());
         updateVictimInfo(picked.getName());
     }
 
@@ -96,13 +128,16 @@ public class GUI extends JFrame {
         }
     }
 
-    public static void main(String[] args) {
-        VictimPicker picker = new VictimPicker();
-        picker.loadList(Tester.createSampleVictims());
-
-        SwingUtilities.invokeLater(() -> {
-            GUI gui = new GUI(picker);
-            gui.setVisible(true);
-        });
+    private void displayAbsenceInfo() {
+        String selectedName = (String) absentDropdown.getSelectedItem();
+        for (Victim victim : picker.getVictims()) {
+            if (victim.getName().equals(selectedName) && victim.isAbsent()) {
+                String absenceDates = victim.getAbsences().stream()
+                        .map(Date::toString)
+                        .collect(Collectors.joining(", "));
+                victimInfoLabel.setText("Absent Victim: " + victim.getName() + ", Absence Dates: " + absenceDates);
+                break;
+            }
+        }
     }
 }
